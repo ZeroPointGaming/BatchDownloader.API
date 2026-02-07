@@ -28,11 +28,25 @@ function App() {
 
   useEffect(() => {
     // Quick health check on mount if we have a URL
-    if (apiUrl) {
-      fetch(`${apiUrl}/health`, { headers: { 'X-API-KEY': apiKey } })
-        .then(res => res.ok ? setHealthStatus('ok') : setHealthStatus('fail'))
-        .catch(() => setHealthStatus('fail'));
-    }
+    const checkHealth = async () => {
+      if (!apiUrl) return;
+      try {
+        console.log(`Checking health: ${apiUrl}/health`);
+        const res = await fetch(`${apiUrl}/health`, {
+          headers: { 'X-API-KEY': apiKey }
+        });
+        if (res.ok) {
+          setHealthStatus('ok');
+        } else {
+          console.warn("Health check failed with status:", res.status);
+          setHealthStatus('fail');
+        }
+      } catch (e) {
+        console.error("Health check fetch error:", e);
+        setHealthStatus('fail');
+      }
+    };
+    checkHealth();
   }, []);
 
   // Downloads State

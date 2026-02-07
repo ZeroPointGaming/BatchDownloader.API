@@ -108,6 +108,18 @@ I've included a GitHub Action to automate the deployment of the web-hosted front
     - Click **Save**.
 4.  Your frontend will be live at `https://<your-username>.github.io/BatchDownloader.API/`.
 
+### Troubleshooting Connection (Web Mode)
+
+If you see **"Agent Unreachable"** when using the web-hosted version:
+
+1.  **Mixed Content Block**: Since GitHub Pages is HTTPS, and your local API is HTTP, the browser might block the request. 
+    - Click the **"Lock/Shield"** icon in your browser address bar.
+    - Go to **Site Settings**.
+    - Find **Insecure content** and set it to **Allow**.
+    - Refresh the page.
+2.  **Private Network Access (PNA)**: Ensure your agent is updated to the latest version which includes PNA headers.
+3.  **Localhost vs 127.0.0.1**: Try using `http://127.0.0.1:5000` if `localhost` fails.
+
 ---
 
 ## Configuration
