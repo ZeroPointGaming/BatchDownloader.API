@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ApiKey=secret-key
+      - FileSystem__RootPath=/downloads
+    volumes:
+      # Map your host download folder to the container's /downloads folder
+      # On Windows, use path like C:/Downloads:/downloads
+      # On Linux/WSL, use path like /home/user/downloads:/downloads
+      - C:/Downloads:/downloads
+    restart: unless-stopped
