@@ -41,4 +41,4 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
-Write-Host "🎉 Successfully published $TaggedImageName!" -ForegroundColor Green
+Write-Host "Successfully published $TaggedImageName!" -ForegroundColor Green
