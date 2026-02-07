@@ -266,7 +266,7 @@ function App() {
           <div className="card download-list">
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1em' }}>
               <h3>Active Downloads & Queue</h3>
-              <button onClick={clearDownloads} style={{ padding: '0.4em 0.8em', fontSize: '0.8em', background: '#444' }}>Clear Finished</button>
+              <button onClick={clearDownloads} style={{ alignItems: 'right', maxWidth: '200px', padding: '0.4em 0.8em', fontSize: '0.8em', background: '#444' }}>Clear Finished</button>
             </header>
             {Object.values(downloads).sort((a, b) => b.Id - a.Id).map(d => (
               <DownloadItem
