@@ -80,6 +80,19 @@ I've included a script to automate publishing the backend image:
     ```
     *Specify `-Registry` and `-Tag` as needed.*
 
+### Deploying Frontend to GitHub Pages
+
+I've included a GitHub Action to automate the deployment of the web-hosted frontend:
+
+1.  Push your changes to the `main` branch.
+2.  The GitHub Action will automatically build and push the `client/dist` folder to a `gh-pages` branch.
+3.  In your GitHub Repository:
+    - Go to **Settings** > **Pages**.
+    - Under **Build and deployment** > **Source**, select **Deploy from a branch**.
+    - Select the `gh-pages` branch and the `/ (root)` folder.
+    - Click **Save**.
+4.  Your frontend will be live at `https://<your-username>.github.io/BatchDownloader.API/`.
+
 ---
 
 ## Configuration
