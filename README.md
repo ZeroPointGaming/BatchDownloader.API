@@ -80,6 +80,21 @@ I've included a script to automate publishing the backend image:
     ```
     *Specify `-Registry` and `-Tag` as needed.*
 
+### Standalone Agent Release
+
+To distribute the agent to users who don't want the full Electron app:
+
+1.  Run the agent build script:
+    ```powershell
+    ./build-agent.ps1
+    ```
+2.  The optimized output will be in `client/publish/agent/`.
+3.  **Required Files for Release**:
+    *   `BatchDownloader.API.exe`: The main executable (contains the runtime).
+    *   `appsettings.json`: The configuration file.
+    
+    *Note: The script automatically removes unused "orphaned" code (via .NET Trimming) and cleans up unnecessary metadata files (.pdb) to keep the release lean.*
+
 ### Deploying Frontend to GitHub Pages
 
 I've included a GitHub Action to automate the deployment of the web-hosted frontend:
