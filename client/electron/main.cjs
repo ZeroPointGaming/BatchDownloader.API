@@ -45,8 +45,12 @@ function startApi() {
             ? path.join(process.resourcesPath, 'api', 'BatchDownloader.API.exe')
             : path.join(process.resourcesPath, 'api', 'BatchDownloader.API');
 
+        const apiDir = path.dirname(apiExePath);
         console.log("Starting API from binary: " + apiExePath);
+        console.log("API Working Directory: " + apiDir);
+
         apiProcess = spawn(apiExePath, ['--urls=http://localhost:5000'], {
+            cwd: apiDir,
             env: { ...process.env, "ASPNETCORE_ENVIRONMENT": "Production" }
         });
     }

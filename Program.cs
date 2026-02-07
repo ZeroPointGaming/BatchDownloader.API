@@ -18,7 +18,7 @@ namespace BatchDownloader.API
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.SetIsOriginAllowed(origin => true)
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
