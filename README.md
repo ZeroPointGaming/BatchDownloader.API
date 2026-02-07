@@ -69,6 +69,17 @@ docker-compose up --build
 
 Access the API at `http://localhost:5000`. You can point your local Desktop client to this URL!
 
+### Publishing to Docker Registry
+
+I've included a script to automate publishing the backend image:
+
+1.  Login to your registry: `docker login`
+2.  Run the publish script:
+    ```powershell
+    ./publish-docker.ps1 -Username your-registry-user
+    ```
+    *Specify `-Registry` and `-Tag` as needed.*
+
 ---
 
 ## Configuration
