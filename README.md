@@ -84,7 +84,7 @@ I've included a script to automate publishing the backend image:
 
 I've included a GitHub Action to automate the deployment of the web-hosted frontend:
 
-1.  Push your changes to the `main` branch.
+1.  Push your changes to the `master` branch.
 2.  The GitHub Action will automatically build and push the `client/dist` folder to a `gh-pages` branch.
 3.  In your GitHub Repository:
     - Go to **Settings** > **Pages**.
