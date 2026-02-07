@@ -188,6 +188,8 @@ function App() {
     }
   };
 
+  const isMixedContent = window.location.protocol === 'https:' && apiUrl.startsWith('http://');
+
   return (
     <div className="container">
       {!connected ? (
@@ -207,11 +209,24 @@ function App() {
             <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} style={{ width: '100%' }} />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginTop: '1em', fontSize: '0.85em' }}>
-            <span>Status check:</span>
-            {healthStatus === 'unknown' && <span style={{ color: '#888' }}>Checking...</span>}
-            {healthStatus === 'ok' && <span style={{ color: '#4caf50' }}>● Agent Reachable</span>}
-            {healthStatus === 'fail' && <span style={{ color: '#f44336' }}>● Agent Unreachable</span>}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5em', marginTop: '1em', fontSize: '0.85em' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+              <span>Status check:</span>
+              {healthStatus === 'unknown' && <span style={{ color: '#888' }}>Checking...</span>}
+              {healthStatus === 'ok' && <span style={{ color: '#4caf50' }}>● Agent Reachable</span>}
+              {healthStatus === 'fail' && <span style={{ color: '#f44336' }}>● Agent Unreachable</span>}
+            </div>
+
+            {healthStatus === 'fail' && (
+              <div style={{ color: '#fba', padding: '0.8em', background: '#322', borderRadius: '4px', marginTop: '0.5em' }}>
+                <strong>Common Fixes:</strong>
+                <ul style={{ margin: '0.5em 0', paddingLeft: '1.5em' }}>
+                  {isMixedContent && <li>Enable "Insecure Content" in Site Settings (Lock Icon)</li>}
+                  <li>Disable AdBlockers for this site (ERR_BLOCKED_BY_CLIENT)</li>
+                  <li>Ensure the Standalone Agent is running on your PC</li>
+                </ul>
+              </div>
+            )}
           </div>
 
           <button onClick={connect} className="primary-button" style={{ marginTop: '1em', width: '100%' }}>Connect to Agent</button>

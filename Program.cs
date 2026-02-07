@@ -34,14 +34,6 @@ namespace BatchDownloader.API
                 {
                     context.Response.Headers.Append("Access-Control-Allow-Private-Network", "true");
                 }
-
-                // If it's a preflight OPTIONS request, ensure we don't block it before CORS handles it
-                if (context.Request.Method == "OPTIONS")
-                {
-                    context.Response.StatusCode = 204;
-                    // Note: We don't return here, we let next() happen so UseCors can add the other headers,
-                    // BUT only if we aren't handling it manually. Actually, let's just add the header and continue.
-                }
                 
                 await next();
             });
