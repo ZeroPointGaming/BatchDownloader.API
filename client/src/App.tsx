@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
 // Backend Interfaces
@@ -21,15 +21,31 @@ interface ProgressMessage {
 
 function App() {
   const [connected, setConnected] = useState(false);
-  const [apiUrl, setApiUrl] = useState('http://localhost:5000'); // Default dev URL
-  const [apiKey, setApiKey] = useState('secret-key'); // Default hardcoded for dev
+  const [apiUrl, setApiUrl] = useState(localStorage.getItem('apiUrl') || 'http://localhost:5000');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || 'secret-key');
   const [downloadDir, setDownloadDir] = useState('');
+  const [healthStatus, setHealthStatus] = useState<'unknown' | 'ok' | 'fail'>('unknown');
+
+  useEffect(() => {
+    // Quick health check on mount if we have a URL
+    if (apiUrl) {
+      fetch(`${apiUrl}/health`, { headers: { 'X-API-KEY': apiKey } })
+        .then(res => res.ok ? setHealthStatus('ok') : setHealthStatus('fail'))
+        .catch(() => setHealthStatus('fail'));
+    }
+  }, []);
 
   // Downloads State
   const [downloads, setDownloads] = useState<Record<number, ProgressMessage>>({});
   const socketRef = useRef<WebSocket | null>(null);
 
+  const saveSettings = (url: string, key: string) => {
+    localStorage.setItem('apiUrl', url);
+    localStorage.setItem('apiKey', key);
+  };
+
   const connect = async () => {
+    saveSettings(apiUrl, apiKey);
     try {
       // 1. Try to get download directory via HTTP to verify connection
       const res = await fetch(`${apiUrl}/getDownloadDirectory`, {
@@ -144,22 +160,72 @@ function App() {
     setDownloads({});
   };
 
+  const shutdownServer = async () => {
+    if (!window.confirm("Are you sure you want to stop the API server? You will need to restart it manually.")) return;
+    try {
+      await fetch(`${apiUrl}/shutdown`, {
+        method: 'POST',
+        headers: { 'X-API-KEY': apiKey }
+      });
+      setConnected(false);
+      setHealthStatus('fail');
+    } catch (e) {
+      alert("Shutdown failed: " + e);
+    }
+  };
+
   return (
     <div className="container">
       {!connected ? (
-        <div className="card" style={{ maxWidth: '400px', margin: 'auto' }}>
-          <h2>Connect to Server</h2>
-          <label>API URL</label>
-          <input type="text" value={apiUrl} onChange={e => setApiUrl(e.target.value)} style={{ width: '100%' }} />
-          <label>API Key</label>
-          <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} style={{ width: '100%' }} />
-          <button onClick={connect} style={{ marginTop: '1em', width: '100%' }}>Connect</button>
+        <div className="card" style={{ maxWidth: '500px', margin: 'auto' }}>
+          <h2>Connect to Download Agent</h2>
+          <p style={{ fontSize: '0.9em', color: '#888', marginBottom: '1.5em' }}>
+            This application requires the <strong>Batch Downloader API</strong> to be running on your computer to access the file system.
+          </p>
+
+          <div className="form-group">
+            <label>API URL</label>
+            <input type="text" value={apiUrl} onChange={e => setApiUrl(e.target.value)} style={{ width: '100%' }} placeholder="http://localhost:5000" />
+          </div>
+
+          <div className="form-group">
+            <label>API Key</label>
+            <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} style={{ width: '100%' }} />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', marginTop: '1em', fontSize: '0.85em' }}>
+            <span>Status check:</span>
+            {healthStatus === 'unknown' && <span style={{ color: '#888' }}>Checking...</span>}
+            {healthStatus === 'ok' && <span style={{ color: '#4caf50' }}>● Agent Reachable</span>}
+            {healthStatus === 'fail' && <span style={{ color: '#f44336' }}>● Agent Unreachable</span>}
+          </div>
+
+          <button onClick={connect} className="primary-button" style={{ marginTop: '1em', width: '100%' }}>Connect to Agent</button>
+
+          <div style={{ marginTop: '2em', paddingTop: '1em', borderTop: '1px solid #333' }}>
+            <h4>Don't have the agent?</h4>
+            <p style={{ fontSize: '0.8em', color: '#aaa' }}>
+              Download the standalone API agent to run it without Electron.
+            </p>
+            <a href="https://github.com/ZeroPointGaming/BatchDownloader.API/releases" target="_blank" rel="noreferrer" style={{ color: '#4a9eff', textDecoration: 'none', fontWeight: 'bold' }}>
+              Download Agent v1.1.0 (win-x64)
+            </a>
+          </div>
         </div>
       ) : (
         <>
           <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h1>Batch Downloader</h1>
-            <button onClick={() => { socketRef.current?.close(); }}>Disconnect</button>
+            <div>
+              <h1>Batch Downloader</h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em', fontSize: '0.8em' }}>
+                <span style={{ color: '#4caf50' }}>● Connected to Local Agent</span>
+                <span style={{ color: '#888' }}>({apiUrl})</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5em' }}>
+              <button onClick={shutdownServer} style={{ background: '#622', color: '#fff' }}>Stop Server</button>
+              <button onClick={() => { socketRef.current?.close(); }}>Disconnect</button>
+            </div>
           </header>
 
           <div className="card">

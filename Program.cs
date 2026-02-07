@@ -69,6 +69,19 @@ namespace BatchDownloader.API
                 return Results.Ok(new { downloadDir });
             });
 
+            app.MapGet("/health", () => Results.Ok(new { status = "ok", version = "1.1.0" }));
+
+            app.MapPost("/shutdown", (IHostApplicationLifetime lifetime) =>
+            {
+                // Give it a tiny bit of time to return the response before killing
+                Task.Run(async () =>
+                {
+                    await Task.Delay(500);
+                    lifetime.StopApplication();
+                });
+                return Results.Ok(new { message = "Shutting down..." });
+            });
+
             app.Map("/ws", async (HttpContext context, Services.IDownloadService downloadSvc) =>
             {
                 if (context.WebSockets.IsWebSocketRequest)
