@@ -9,22 +9,22 @@ A modern, high-performance desktop application for managing batch file downloads
 
 ---
 
-## ✨ Features
+## Features
 
-*   **📦 Batch Processing**: Paste multiple links and download them all at once.
-*   **⏳ Real-time Tracking**: Watch download progress (speed, percentage, status) via high-speed WebSockets.
-*   **⏯️ Stop & Resume**: Interrupt downloads and pick up exactly where you left off using HTTP Range headers.
-*   **🚀 Concurrency Control**: Limit how many files download simultaneously (1-10) to manage system resources.
-*   **📉 Smart Throttling**: Set cumulative speed limits (KB/s) to save bandwidth for other tasks.
-*   **🧹 Queue Management**: Remove individual items or clear all finished downloads with one click.
-*   **🛡️ Security First**:
+*   **Batch Processing**: Paste multiple links and download them all at once.
+*   **Real-time Tracking**: Watch download progress (speed, percentage, status) via high-speed WebSockets.
+*   **Stop & Resume**: Interrupt downloads and pick up exactly where you left off using HTTP Range headers.
+*   **Concurrency Control**: Limit how many files download simultaneously (1-10) to manage system resources.
+*   **Smart Throttling**: Set cumulative speed limits (KB/s) to save bandwidth for other tasks.
+*   **Queue Management**: Remove individual items or clear all finished downloads with one click.
+*   **Security First**:
     *   **API Key Protection**: Secure handshake between Electron and the .NET service.
     *   **Path Isolation**: Strict directory traversal prevention ensures files stay within allowed folders.
-*   **🛑 Clean Lifecycle**: Robust shutdown protocol ensures no orphaned backend processes are left running on app exit.
+*   **Clean Lifecycle**: Robust shutdown protocol ensures no orphaned backend processes are left running on app exit.
 
 ---
 
-## 🛠️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 
@@ -46,7 +46,7 @@ A modern, high-performance desktop application for managing batch file downloads
     ```
     *This launches the .NET backend API and the Electron interface simultaneously.*
 
-### 📦 Creating a Production Release
+### Creating a Production Release
 
 I've included an automation script to handle the multi-step build process (compiling .NET to native binary + bundling Electron).
 
@@ -59,7 +59,7 @@ I've included an automation script to handle the multi-step build process (compi
 
 ---
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 To run the backend as a headless service on a remote server/NAS:
 
@@ -71,7 +71,7 @@ Access the API at `http://localhost:5000`. You can point your local Desktop clie
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Settings in `appsettings.json`:
 
@@ -79,7 +79,3 @@ Settings in `appsettings.json`:
 | :--- | :--- | :--- |
 | `ApiKey` | Secret key for API access | `secret-key` |
 | `FileSystem:RootPath` | Where files are saved | `C:\Downloads` |
-
----
-
-*Built with ❤️ for High-Speed Productivity.*
