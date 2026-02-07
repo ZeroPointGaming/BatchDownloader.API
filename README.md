@@ -1,4 +1,4 @@
-# 🚀 Batch Downloader Desktop
+# Batch Downloader Desktop
 
 A modern, high-performance desktop application for managing batch file downloads. Built with a **React** frontend and a robust **ASP.NET Core** backend, all wrapped in **Electron** for a seamless native experience.
 
