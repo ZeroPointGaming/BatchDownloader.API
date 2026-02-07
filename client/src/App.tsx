@@ -26,28 +26,34 @@ function App() {
   const [downloadDir, setDownloadDir] = useState('');
   const [healthStatus, setHealthStatus] = useState<'unknown' | 'ok' | 'fail'>('unknown');
 
-  useEffect(() => {
-    // Quick health check on mount if we have a URL
-    const checkHealth = async () => {
-      if (!apiUrl) return;
-      try {
-        console.log(`Checking health: ${apiUrl}/health`);
-        const res = await fetch(`${apiUrl}/health`, {
-          headers: { 'X-API-KEY': apiKey }
-        });
-        if (res.ok) {
-          setHealthStatus('ok');
-        } else {
-          console.warn("Health check failed with status:", res.status);
-          setHealthStatus('fail');
-        }
-      } catch (e) {
-        console.error("Health check fetch error:", e);
+  const checkHealth = async () => {
+    if (!apiUrl) return;
+    try {
+      const res = await fetch(`${apiUrl}/health`, {
+        headers: { 'X-API-KEY': apiKey }
+      });
+      if (res.ok) {
+        setHealthStatus('ok');
+      } else {
         setHealthStatus('fail');
       }
-    };
+    } catch (e) {
+      setHealthStatus('fail');
+    }
+  };
+
+  useEffect(() => {
     checkHealth();
-  }, []);
+
+    // Auto-poll if not connected and unreachable
+    const timer = setInterval(() => {
+      if (!connected && healthStatus !== 'ok') {
+        checkHealth();
+      }
+    }, 3000); // Check every 3 seconds
+
+    return () => clearInterval(timer);
+  }, [apiUrl, apiKey, connected, healthStatus]);
 
   // Downloads State
   const [downloads, setDownloads] = useState<Record<number, ProgressMessage>>({});
@@ -215,6 +221,12 @@ function App() {
               {healthStatus === 'unknown' && <span style={{ color: '#888' }}>Checking...</span>}
               {healthStatus === 'ok' && <span style={{ color: '#4caf50' }}>● Agent Reachable</span>}
               {healthStatus === 'fail' && <span style={{ color: '#f44336' }}>● Agent Unreachable</span>}
+              <button
+                onClick={checkHealth}
+                style={{ background: 'transparent', padding: '2px 5px', fontSize: '0.7em', color: '#888', border: '1px solid #444', height: 'auto', width: 'auto' }}
+              >
+                Refresh
+              </button>
             </div>
 
             {healthStatus === 'fail' && (
