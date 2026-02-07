@@ -3,7 +3,7 @@
 A modern, high-performance desktop application for managing batch file downloads. Built with a **React** frontend and a robust **ASP.NET Core** backend, all wrapped in **Electron** for a seamless native experience.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)
+![.NET](https://img.shields.io/badge/.NET-10-purple.svg)
 ![React](https://img.shields.io/badge/React-19-blue.svg)
 ![Electron](https://img.shields.io/badge/Electron-Latest-9feaf9.svg)
 
