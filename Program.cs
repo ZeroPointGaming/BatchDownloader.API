@@ -44,7 +44,9 @@ namespace BatchDownloader.API
             // Simple API Key Auth Middleware
             app.Use(async (context, next) =>
             {
-                if (context.Request.Path.StartsWithSegments("/ws"))
+                if (context.Request.Method == "OPTIONS" || 
+                    context.Request.Path.StartsWithSegments("/ws") ||
+                    context.Request.Path.StartsWithSegments("/health"))
                 {
                     await next();
                     return;
