@@ -93,7 +93,7 @@ To distribute the agent to users who don't want the full Electron app:
     *   `BatchDownloader.API.exe`: The main executable (contains the runtime).
     *   `appsettings.json`: The configuration file.
     
-    *Note: The script automatically removes unused "orphaned" code (via .NET Trimming) and cleans up unnecessary metadata files (.pdb) to keep the release lean.*
+    *Note: The script produces a single, compressed executable for easy distribution and cleans up unnecessary metadata files (.pdb) to keep the release lean.*
 
 ### Deploying Frontend to GitHub Pages
 

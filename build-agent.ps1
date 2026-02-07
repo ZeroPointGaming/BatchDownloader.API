@@ -16,13 +16,13 @@ Write-Host "Building .NET Agent (win-x64)..." -ForegroundColor Yellow
 # Flags explained:
 # - SelfContained: Includes .NET runtime (user doesn't need to install anything)
 # - PublishSingleFile: Bundles everything into the EXE
-# - PublishTrimmed: Removes unused code (smaller size, "orphaned dependencies" fix)
+# - PublishTrimmed: DISABLED (Caused runtime crash with Authorization middleware)
 # - PublishReadyToRun: Improves startup time
 # - EnableCompressionInSingleFile: Minimizes EXE size
 dotnet publish ./BatchDownloader.API.csproj -c Release -r win-x64 --self-contained true -o $outputPath `
     /p:PublishSingleFile=true `
     /p:IncludeNativeLibrariesForSelfExtract=true `
-    /p:PublishTrimmed=true `
+    /p:PublishTrimmed=false `
     /p:PublishReadyToRun=true `
     /p:EnableCompressionInSingleFile=true `
     /p:DebugType=None `

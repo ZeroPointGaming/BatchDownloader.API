@@ -28,6 +28,17 @@ namespace BatchDownloader.API
             var app = builder.Build();
 
             app.UseCors("AllowAll");
+
+            // Handle Private Network Access (PNA) preflight requests
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Method == "OPTIONS" && context.Request.Headers.ContainsKey("Access-Control-Request-Private-Network"))
+                {
+                    context.Response.Headers.Append("Access-Control-Allow-Private-Network", "true");
+                }
+                await next();
+            });
+
             app.UseWebSockets();
 
             // Simple API Key Auth Middleware
