@@ -29,9 +29,9 @@ function App() {
   const checkHealth = async () => {
     if (!apiUrl) return;
     try {
-      const res = await fetch(`${apiUrl}/health`, {
-        headers: { 'X-API-KEY': apiKey }
-      });
+      // Sanitize URL to remove trailing slashes
+      const cleanUrl = apiUrl.replace(/\/+$/, "");
+      const res = await fetch(`${cleanUrl}/health`);
       if (res.ok) {
         setHealthStatus('ok');
       } else {
@@ -45,15 +45,17 @@ function App() {
   useEffect(() => {
     checkHealth();
 
-    // Auto-poll if not connected and unreachable
+    // Auto-poll if not connected
+    // We don't include healthStatus in the dependencies to avoid re-running this effect
+    // every time the status changes.
     const timer = setInterval(() => {
-      if (!connected && healthStatus !== 'ok') {
+      if (!connected) {
         checkHealth();
       }
     }, 3000); // Check every 3 seconds
 
     return () => clearInterval(timer);
-  }, [apiUrl, apiKey, connected, healthStatus]);
+  }, [apiUrl, apiKey, connected]);
 
   // Downloads State
   const [downloads, setDownloads] = useState<Record<number, ProgressMessage>>({});
@@ -83,9 +85,6 @@ function App() {
       // 2. Connect WebSocket
       const wsUrl = apiUrl.replace("http", "ws") + "/ws";
       const ws = new WebSocket(wsUrl);
-      // Note: WS specific headers not supported in browser API easily, 
-      // but we skipped auth for WS handshake in backend for now or passed via query param if needed.
-      // If we need auth, we can pass ?key=... or do handshake. For now backend allows WS.
 
       ws.onopen = () => {
         setConnected(true);

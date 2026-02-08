@@ -10,7 +10,19 @@ if (Test-Path "./publish") {
 
 # 2. Build the Native Windows Backend
 Write-Host "Building .NET Backend (win-x64)..." -ForegroundColor Yellow
-dotnet publish ../BatchDownloader.API.csproj -c Release -r win-x64 --self-contained true -o ./publish
+# Forced cleanup of both root and client publish folders to ensure no stale binaries
+Remove-Item -Recurse -Force ../bin -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force ../obj -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force ../publish -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force ./publish -ErrorAction SilentlyContinue
+
+# Explicitly restore packages since obj folder was deleted
+dotnet restore ../BatchDownloader.API.csproj -r win-x64
+
+# Force delete the target files in the publish folder just in case
+Remove-Item -Force ./publish/BatchDownloader.API.* -ErrorAction SilentlyContinue
+
+dotnet publish ../BatchDownloader.API.csproj -c Release -r win-x64 --self-contained true -o ./publish /p:NoIncrementalBuild=true
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host ".NET Build Failed!" -ForegroundColor Red

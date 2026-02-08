@@ -24,7 +24,7 @@
     ],
     "extraResources": [
       {
-        "from": "../publish",
+        "from": "publish",
         "to": "api",
         "filter": [
           "**/*"

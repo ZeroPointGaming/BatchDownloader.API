@@ -44,9 +44,10 @@ namespace BatchDownloader.API
             // Simple API Key Auth Middleware
             app.Use(async (context, next) =>
             {
+                var pathValue = context.Request.Path.Value ?? "";
                 if (context.Request.Method == "OPTIONS" || 
-                    context.Request.Path.StartsWithSegments("/ws") ||
-                    context.Request.Path.StartsWithSegments("/health"))
+                    pathValue.Contains("/health", StringComparison.OrdinalIgnoreCase) ||
+                    pathValue.Contains("/ws", StringComparison.OrdinalIgnoreCase))
                 {
                     await next();
                     return;
@@ -56,7 +57,7 @@ namespace BatchDownloader.API
                 if (!context.Request.Headers.TryGetValue("X-API-KEY", out var extractedApiKey))
                 {
                     context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("API Key was not provided.");
+                    await context.Response.WriteAsync($"API Key header (X-API-KEY) was not provided. Path: {context.Request.Path}");
                     return;
                 }
 
@@ -66,7 +67,7 @@ namespace BatchDownloader.API
                 if (!string.Equals(extractedApiKey, apiKey))
                 {
                     context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("Unauthorized client.");
+                    await context.Response.WriteAsync("Unauthorized: The provided API Key is incorrect.");
                     return;
                 }
 
@@ -82,7 +83,7 @@ namespace BatchDownloader.API
                 return Results.Ok(new { downloadDir });
             });
 
-            app.MapGet("/health", () => Results.Ok(new { status = "ok", version = "1.1.0" }));
+            app.MapGet("/health", () => Results.Ok(new { status = "ok", version = "1.1.3" }));
 
             app.MapPost("/shutdown", (IHostApplicationLifetime lifetime) =>
             {
